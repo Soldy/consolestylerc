@@ -1,6 +1,6 @@
 {
   "name": "consolestylerc",
-  "version": "0.0.1",
+  "version": "0.0.2-rc2",
   "description": "console rc style",
   "main": "index.js",
   "scripts": {
@@ -12,13 +12,17 @@
   },
   "keywords": [],
   "author": "Soldy",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/Soldy/consolestylerc/issues"
   },
   "homepage": "https://github.com/Soldy/consolestylerc#readme",
   "devDependencies": {
-    "interactiveConsole": "0.0.7-alpha0",
-    "nanoTest": "^0.9.9-beta9"
+    "assertrc": "^1.0.2-rc2",
+    "nano-test-output-cli": "^0.9.9-beta15",
+    "nanoTest": "^0.9.9-beta15",
+    "sandboxrc": "^0.9.9-beta11",
+    "setuprc": "^0.9.9-beta14",
+    "typehardeningrc": "^0.9.9-beta11"
   }
 }
