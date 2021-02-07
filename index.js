@@ -39,24 +39,42 @@ const consoleStyleBase = function(){
      * @private
      * @return {string}
      */
-    const styler = function(type,style){
-        if (
-            (typeof styleMap[type] !== "undefined") && 
-            (typeof styleMap[type][style] !== "undefined")
-        ){
-            return ";"+styleMap[type][style].toString();
+    const styler = function(type,value){
+        if (typeof map[type] === 'undefined')
+             return '';
+        if (type === 'effect')
+             return effect (value);
+        if (typeof map[type][value] !== "undefined"){
+            return ";"+map[type][value].toString();
         }else{
              if(type  === "color"){
-                 let color = colorCheck(style);
+                 let color = colorCheck(value);
                  if (style !== false)
                      return color;
              }else if(type  === "background"){
-                 let background = backgroundCheck(style);
+                 let background = backgroundCheck(value);
                  if (style !== false)
                      return background;
              }
         }
         return "";
+    }
+    /*
+    * @param {string||array} effects 
+    * @private
+    * @return string || false
+    */
+    const effect = function (effects){
+        let out = '';
+        if (Array.isArray(effects)){
+            for(let i of effects)
+                 if(typeof map.effect[i] !== "undefined")
+                     out += ';'+map.effect[i].toString();
+        }else{
+            if(typeof map.effect[effects] !== "undefined")
+                out += ';'+map.effect[effects].toString();
+        }
+        return out;
     }
     /*
      * @param {string} color
@@ -91,7 +109,7 @@ const consoleStyleBase = function(){
      * @private
      * @var {object}
      */
-    const styleMap={
+    const map={
         color: {
              black: 30,
              red: 31,
