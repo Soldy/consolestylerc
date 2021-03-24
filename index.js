@@ -15,12 +15,12 @@ const consoleStyleBase = function(){
      * @return {string}
      */
     this.style =  function (text, styles) {
-        let styled = style;
+        let styled = _style;
         for (let i in styles)
             for (let s in styles[i])
-                      styled += styler(s, styles[i][s]);
+                      styled += _styler(s, styles[i][s]);
         for (let s in styles)
-               styled += styler(s, styles[s]);
+               styled += _styler(s, styles[s]);
         let last = text.lastIndexOf("\u001b[0m");
         text = text.slice(0, last)+text.slice(last).replace("\u001b[0m", "\u001b[0m"+styled+"m");
         return styled+"m"+text+"\u001b[0m";
@@ -31,7 +31,7 @@ const consoleStyleBase = function(){
      * @return {string}
      */
     this.remove = function (text){
-        return text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+        return _remove(text);
     }
     /*
      * @param {string} type
@@ -39,21 +39,21 @@ const consoleStyleBase = function(){
      * @private
      * @return {string}
      */
-    const styler = function(type,value){
-        if (typeof map[type] === 'undefined')
+    const _styler = function(type,value){
+        if (typeof _map[type] === 'undefined')
              return '';
         if (type === 'effect')
              return effect (value);
-        if (typeof map[type][value] !== "undefined"){
-            return ";"+map[type][value].toString();
-        }else{
+        if (typeof _map[type][value] !== "undefined"){
+            return ";"+_map[type][value].toString();
+        }else{ // AAAAAAAAA WTF is that ??? 
              if(type  === "color"){
-                 let color = colorCheck(value);
-                 if (style !== false)
+                 let color = _colorCheck(value);
+                 if (_style !== false)
                      return color;
              }else if(type  === "background"){
-                 let background = backgroundCheck(value);
-                 if (style !== false)
+                 let background = _backgroundCheck(value);
+                 if (_style !== false)
                      return background;
              }
         }
@@ -68,11 +68,11 @@ const consoleStyleBase = function(){
         let out = '';
         if (Array.isArray(effects)){
             for(let i of effects)
-                 if(typeof map.effect[i] !== "undefined")
-                     out += ';'+map.effect[i].toString();
+                 if(typeof _map.effect[i] !== "undefined")
+                     out += ';'+_map.effect[i].toString();
         }else{
-            if(typeof map.effect[effects] !== "undefined")
-                out += ';'+map.effect[effects].toString();
+            if(typeof _map.effect[effects] !== "undefined")
+                out += ';'+_map.effect[effects].toString();
         }
         return out;
     }
@@ -81,35 +81,59 @@ const consoleStyleBase = function(){
      * @private
      * @return {string}
      */
-    const colorCheck = function (color){
+    const _colorCheck = function (color){
         if(typeof color === "undefined")
             return false;
         if(parseInt(color).toString() === color.toString())
             return ";38;5;"+color;
-        return ";38:2:"+style+":104";
+        if(typeof _map.color[color] !== 'undefined')
+            return ";48:2:"+_map.color[color]+":104 ";
+        return ";48:2:"+color;
     }
     /*
      * @param {string} color
      * @private
      * @return {string}
      */
-    const backgroundCheck = function (color){
+    const _backgroundCheck = function (color){
         if(typeof color === "undefined")
             return false;
         if(parseInt(color).toString() === color.toString())
             return ";48;5;"+color;
-        return ";48:2:"+style+":104";
+        if(typeof _map.background[color] !== 'undefined')
+            return ";48:2:"+_map.background[color]+":104";
+        return ";48:2:"+color;
+    }
+    /*
+     * @param {integer} red
+     * @param {integer} green
+     * @param {integer} blue
+     * @private
+     * @return {string}
+     */
+    const _trueColor = function (red, green, blue){
+        return (";38;"+red+";"+green+";"+blue+";0m");
+    }
+    /*
+     * @param {integer} red
+     * @param {integer} green
+     * @param {integer} blue
+     * @private
+     * @return {string}
+     */
+    const _trueBackground = function (red,green,blue){
+        return (";48;2;"+red+";"+green+";"+blue+";0m");
     }
     /*
      * @private
      * @var {string}
      */
-    const style = "\u001b[85";
+    const _style = "\u001b[85";
     /*
      * @private
      * @var {object}
      */
-    const map={
+    const _map={
         color: {
              black: 30,
              red: 31,
@@ -143,6 +167,14 @@ const consoleStyleBase = function(){
             strikethrough: 9,
         }
     };
+    /*
+     * @param {string} text
+     * @private
+     * @return {string}
+     */
+    const _remove = function (text){
+        return text.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+    }
 }
 
 
