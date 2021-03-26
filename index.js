@@ -43,29 +43,23 @@ const consoleStyleBase = function(){
      * @return {string}
      */
     const _styler = function(type,value){
-        if (typeof _map[type] === 'undefined')
-             return '';
-        if (type === 'effect')
-             return effect (value);
-        if (typeof _map[type][value] !== "undefined")
-            return ";"+_map[type][value].toString();
-        if(type  === "color"){
-            let color = _colorCheck(value);
-            if (color !== false)
-                return color;
-         }else if(type  === "background"){
-            let background = _backgroundCheck(value);
-            if (background !== false)
-                return background;
-        }
-        return "";
+        if (typeof _dictonary[type] === 'undefined')
+            return '';
+        const style = _modifiers[
+            _dictonary[
+                type
+            ]
+        ](value);
+        if (style === false)
+            return '';
+       return style;
     }
     /*
     * @param {string||array} effects 
     * @private
     * @return string || false
     */
-    const effect = function (effects){
+    const _effect = function (effects){
         let out = '';
         if (Array.isArray(effects)){
             for(let i of effects)
@@ -85,10 +79,10 @@ const consoleStyleBase = function(){
     const _colorCheck = function (color){
         if(typeof color === "undefined")
             return false;
+        if(typeof _map.color[color] !== 'undefined')
+            return ";"+_map.color[color].toString();
         if(parseInt(color).toString() === color.toString())
             return ";38;5;"+color;
-        if(typeof _map.color[color] !== 'undefined')
-            return ";48:2:"+_map.color[color]+":104 ";
         return ";48:2:"+color;
     }
     /*
@@ -99,10 +93,10 @@ const consoleStyleBase = function(){
     const _backgroundCheck = function (color){
         if(typeof color === "undefined")
             return false;
+        if(typeof _map.background[color] !== 'undefined')
+            return ";"+_map.background[color].toString();
         if(parseInt(color).toString() === color.toString())
             return ";48;5;"+color;
-        if(typeof _map.background[color] !== 'undefined')
-            return ";48:2:"+_map.background[color]+":104";
         return ";48:2:"+color;
     }
     /*
@@ -175,7 +169,21 @@ const consoleStyleBase = function(){
      */
     const _remove = function (text){
         return text.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
-    }
+    };
+    const _modifiers = {
+        'color'       : _colorCheck,
+        'effect'      : _effect,
+        'background'  : _backgroundCheck
+    };
+    const _dictonary = {
+        'c'          : 'color',
+        'color'      : 'color',
+        'e'          : 'effect',
+        'effect'     : 'effect',
+        'b'          : 'background',
+        'background' : 'background'
+    };
+
 }
 
 
