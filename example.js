@@ -49,3 +49,20 @@ console.log(
 
 
 
+//simple true color style 
+console.log(
+    stylerc.style(
+        'styled true color test text',
+        {
+             'color':'200;0;255',
+             'background':'200;0;255',
+             'effect':[
+                'blink',
+                'underline'
+             ]
+        }
+    )
+);
+
+
+
